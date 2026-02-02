@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fareed Mosavat</title>
+
+<!-- OG / Unfurl -->
+<meta name="description" content="Visiting Partner at a16z speedrun. Operator turned investor. Previously Pixar, Zynga, Runkeeper, Instacart, Slack, Reforge.">
+<meta property="og:title" content="Fareed Mosavat">
+<meta property="og:description" content="Visiting Partner at a16z speedrun. Operator turned investor. Previously Pixar, Zynga, Runkeeper, Instacart, Slack, Reforge.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fareedmosavat.com">
+<meta property="og:image" content="https://fareedmosavat.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@far33d">
+<meta name="twitter:title" content="Fareed Mosavat">
+<meta name="twitter:description" content="Visiting Partner at a16z speedrun. Operator turned investor.">
+<meta name="twitter:image" content="https://fareedmosavat.com/og.png">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --green: #4af626;
+    --green-dim: #4af62644;
+    --bg: #0a0a0a;
+    --text: #e0e0e0;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--green-dim) transparent;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── Canvas ────────────────────────────────────────── */
+  #particle-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── Content Layer ─────────────────────────────────── */
+  .content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* ── Hero ───────────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    color: #fff;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards 0.3s;
+  }
+
+  .hero-tagline {
+    font-size: 1rem;
+    font-weight: 300;
+    color: #888;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards 0.6s;
+  }
+
+  .hero-tagline a {
+    color: var(--green);
+    text-decoration: none;
+    border-bottom: 1px solid var(--green-dim);
+    transition: border-color 0.3s ease;
+  }
+
+  .hero-tagline a:hover {
+    border-color: var(--green);
+  }
+
+  .hero-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards 0.9s;
+  }
+
+  .hero-links a {
+    color: var(--green);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--green-dim);
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .hero-links a:hover {
+    border-color: var(--green);
+    text-shadow: 0 0 8px var(--green-dim);
+  }
+
+  /* ── Sections ──────────────────────────────────────── */
+  .section {
+    padding: 5rem 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Section Headings ──────────────────────────────── */
+  .section-heading {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin-bottom: 2rem;
+  }
+
+  /* ── The Arc ───────────────────────────────────────── */
+  .arc-text {
+    color: #aaa;
+    font-weight: 300;
+    font-size: 0.95rem;
+    max-width: 640px;
+    margin-bottom: 3rem;
+  }
+
+  .arc-text strong {
+    color: #fff;
+    font-weight: 500;
+  }
+
+  /* Career Constellation */
+  #constellation-canvas {
+    width: 100%;
+    height: 50vh;
+    min-height: 400px;
+    display: block;
+    cursor: default;
+    position: relative;
+    z-index: 2;
+  }
+
+  .constellation-detail {
+    text-align: center;
+    min-height: 2.5rem;
+    margin-top: 1rem;
+    color: #888;
+    font-size: 0.85rem;
+    font-weight: 300;
+    transition: opacity 0.3s ease;
+  }
+
+  /* ── Investment Section ────────────────────────────── */
+  .invest-text {
+    color: #aaa;
+    font-weight: 300;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    max-width: 640px;
+  }
+
+  .invest-text strong {
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .theme-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 2rem 0;
+  }
+
+  .theme-node {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--green-dim);
+    border-radius: 20px;
+    color: var(--green);
+    font-size: 0.8rem;
+    font-weight: 400;
+    background: rgba(74, 246, 38, 0.04);
+    transition: all 0.4s ease;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+    max-height: 2.5rem;
+  }
+
+  .theme-node .theme-label {
+    display: block;
+    transition: all 0.3s ease;
+  }
+
+  .theme-node .theme-detail {
+    display: block;
+    color: #999;
+    font-size: 0.75rem;
+    font-weight: 300;
+    margin-top: 0.4rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .theme-node:hover,
+  .theme-node.active {
+    border-color: var(--green);
+    background: rgba(74, 246, 38, 0.08);
+    box-shadow: 0 0 20px rgba(74, 246, 38, 0.12);
+    max-height: 6rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .theme-node:hover .theme-detail,
+  .theme-node.active .theme-detail {
+    opacity: 1;
+  }
+
+  .invest-cta {
+    margin-top: 2rem;
+  }
+
+  .invest-cta a {
+    color: var(--green);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--green-dim);
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .invest-cta a:hover {
+    border-color: var(--green);
+    text-shadow: 0 0 8px var(--green-dim);
+  }
+
+  /* ── The Work ──────────────────────────────────────── */
+  .work-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .work-item {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #151515;
+    transition: all 0.3s ease;
+  }
+
+  .work-item:last-child {
+    border-bottom: none;
+  }
+
+  .work-item:hover {
+    padding-left: 0.5rem;
+  }
+
+  .work-item a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+  }
+
+  .work-item a:hover {
+    color: var(--green);
+  }
+
+  .work-item .work-hook {
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 300;
+    margin-top: 0.3rem;
+  }
+
+  /* ── Bottom ─────────────────────────────────────────── */
+  .bottom-spacer {
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .colophon {
+    color: #2a2a2a;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+
+  .colophon a {
+    color: #2a2a2a;
+    text-decoration: none;
+    border-bottom: 1px solid #1a1a1a;
+    transition: color 0.3s ease;
+  }
+
+  .colophon a:hover {
+    color: var(--green);
+  }
+
+  /* ── Animations ────────────────────────────────────── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ────────────────────────────────────── */
+  @media (max-width: 600px) {
+    body { font-size: 14px; }
+    .hero-links { gap: 1rem; }
+    #constellation-canvas { height: 70vh; min-height: 400px; }
+    .theme-cluster { gap: 0.5rem; }
+    .theme-node { font-size: 0.75rem; padding: 0.4rem 0.8rem; max-height: 2.2rem; }
+    .theme-node:hover, .theme-node.active {
+      padding: 0.5rem 0.8rem;
+    }
+    .theme-node .theme-detail { font-size: 0.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<div class="content">
+
+  <!-- ── Hero ───────────────────────────────────── -->
+  <div class="hero">
+    <h1>Fareed<br>Mosavat</h1>
+    <p class="hero-tagline">Visiting Partner at <a href="https://speedrun.a16z.com" target="_blank">a16z speedrun</a>.</p>
+    <div class="hero-links">
+      <a href="https://x.com/far33d" target="_blank">@far33d</a>
+      <a href="https://linkedin.com/in/fareed" target="_blank">LinkedIn</a>
+      <a href="https://speedrun.a16z.com" target="_blank">speedrun</a>
+    </div>
+  </div>
+
+  <!-- ── The Arc ────────────────────────────────── -->
+  <div class="section" id="arc">
+    <p class="arc-text">
+      I started my career at <strong>Pixar</strong> building physics simulations, then spent a decade as an operator at startups from pre-launch to public &mdash; <strong>Zynga</strong>, <strong>Runkeeper</strong>, <strong>Instacart</strong>, <strong>Slack</strong>. I ran product education at <strong>Reforge</strong> for tens of thousands of PMs. Now I invest at the earliest stage through <strong>a16z speedrun</strong>.
+    </p>
+    <canvas id="constellation-canvas"></canvas>
+    <div class="constellation-detail" id="constellation-detail">&nbsp;</div>
+  </div>
+
+  <!-- ── What I Invest In ───────────────────────── -->
+  <div class="section" id="invest">
+    <h2 class="section-heading">What I invest in</h2>
+    <p class="invest-text">
+      <strong>People first.</strong> I look for founders with some track record of
+      excellence &mdash; people who've done interesting, special things
+      and have that quality of being unstoppable. The idea matters,
+      but the founder matters more.
+    </p>
+    <p class="invest-text">
+      Most of the companies I work with are <strong>B2B</strong> and almost
+      all are <strong>AI-native</strong> &mdash; not AI as a feature,
+      but AI enabling a new class of company that couldn't have existed before.
+      Small teams, capital efficient, building where AI fundamentally changes
+      the cost structure.
+    </p>
+    <div class="theme-cluster" id="theme-cluster">
+      <div class="theme-node" data-detail="Replacing entire workflows, not just assisting — AI that owns the outcome.">
+        <span class="theme-label">Vertical AI agents</span>
+        <span class="theme-detail"></span>
+      </div>
+      <div class="theme-node" data-detail="Tools that make developers 10x more productive, not 10% more comfortable.">
+        <span class="theme-label">Developer tools</span>
+        <span class="theme-detail"></span>
+      </div>
+      <div class="theme-node" data-detail="The picks and shovels layer — what every AI company needs to build on.">
+        <span class="theme-label">AI infrastructure</span>
+        <span class="theme-detail"></span>
+      </div>
+      <div class="theme-node" data-detail="Products that grow through usage. Prosumer tools that cross into enterprise.">
+        <span class="theme-label">PLG &amp; prosumer</span>
+        <span class="theme-detail"></span>
+      </div>
+      <div class="theme-node" data-detail="AI that makes teams better together, not just individuals faster.">
+        <span class="theme-label">Multi-player AI</span>
+        <span class="theme-detail"></span>
+      </div>
+      <div class="theme-node" data-detail="AI that touches the physical world — robots, embodied agents, hardware-software.">
+        <span class="theme-label">Robotics &amp; physical AI</span>
+        <span class="theme-detail"></span>
+      </div>
+      <div class="theme-node" data-detail="New tools for making things — where AI is a creative partner, not a replacement.">
+        <span class="theme-label">AI for creative tools</span>
+        <span class="theme-detail"></span>
+      </div>
+    </div>
+    <div class="invest-cta">
+      <a href="https://speedrun.a16z.com/apply" target="_blank">If you're building something like this, apply to speedrun &rarr;</a>
+    </div>
+  </div>
+
+  <!-- ── The Work ───────────────────────────────── -->
+  <div class="section" id="work">
+    <h2 class="section-heading">Writing &amp; teaching</h2>
+    <ul class="work-list">
+      <li class="work-item">
+        <a href="https://www.reforge.com/courses/product-strategy" target="_blank">Product Strategy</a>
+        <div class="work-hook">The course I built with Casey Winters at Reforge. Tens of thousands of PMs have taken it.</div>
+      </li>
+      <li class="work-item">
+        <a href="https://www.reforge.com/podcast/unsolicited-feedback" target="_blank">Unsolicited Feedback</a>
+        <div class="work-hook">Weekly podcast with Brian Balfour. We say what we actually think.</div>
+      </li>
+      <li class="work-item">
+        <a href="https://www.lennyspodcast.com/videos/how-to-build-trust-and-grow-as-a-product-leader-fareed-mosavat-reforge-slack-instacart-pixar/" target="_blank">Lenny's Podcast</a>
+        <div class="work-hook">On building trust, the four types of product work, and avoiding the manager death spiral.</div>
+      </li>
+      <li class="work-item">
+        <a href="https://reforge.com/blog/crossing-the-canyon-product-manager-to-product-leader" target="_blank">Crossing the Canyon</a>
+        <div class="work-hook">The hardest career transition in product &mdash; and how to survive it.</div>
+      </li>
+      <li class="work-item">
+        <a href="https://speedrun.substack.com/p/14-big-ideas-for-2026" target="_blank">14 Big Ideas for 2026</a>
+        <div class="work-hook">What we're watching and what we think is coming next.</div>
+      </li>
+      <li class="work-item">
+        <a href="https://speedrun.substack.com/p/advice-for-the-next-generation-of-founders" target="_blank">Advice for the Next Generation of Startup Founders</a>
+        <div class="work-hook">What we tell every founder who comes through speedrun.</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="bottom-spacer">
+    <p class="colophon">Lovingly crafted with <a href="https://claude.ai/claude-code" target="_blank">Claude Code</a>.</p>
+  </div>
+
+</div>
+
+<script>
+// ── Particle System with Scroll Response ────────────────
+
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let width, height, particles, mouse;
+let scrollProgress = 0;
+
+function initParticles() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  mouse = { x: width / 2, y: height / 2, active: false };
+
+  const count = Math.min(Math.floor((width * height) / 10000), 150);
+  particles = [];
+
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      radius: Math.random() * 1.5 + 0.5,
+      life: Math.random(),
+    });
+  }
+}
+
+function stepParticles() {
+  const density = 1 + scrollProgress * 0.5;
+  const baseSpeed = 0.2 + scrollProgress * 0.15;
+  const connectionDist = 120 + scrollProgress * 60;
+  const mouseRadius = 200;
+  const mouseForce = 0.02;
+  const friction = 0.99;
+
+  for (const p of particles) {
+    p.vx += (Math.random() - 0.5) * 0.04 * density;
+    p.vy += (Math.random() - 0.5) * 0.04 * density;
+
+    if (mouse.active) {
+      const dx = mouse.x - p.x;
+      const dy = mouse.y - p.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < mouseRadius && dist > 1) {
+        p.vx += (dx / dist) * mouseForce;
+        p.vy += (dy / dist) * mouseForce;
+      }
+    }
+
+    const v = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+    if (v > baseSpeed) {
+      p.vx = (p.vx / v) * baseSpeed;
+      p.vy = (p.vy / v) * baseSpeed;
+    }
+
+    p.vx *= friction;
+    p.vy *= friction;
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (p.x < 0) p.x = width;
+    if (p.x > width) p.x = 0;
+    if (p.y < 0) p.y = height;
+    if (p.y > height) p.y = 0;
+
+    p.life += 0.003;
+    if (p.life > 1) p.life = 0;
+  }
+
+  ctx.clearRect(0, 0, width, height);
+
+  const maxAlpha = 0.12 + scrollProgress * 0.06;
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const a = particles[i];
+      const b = particles[j];
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < connectionDist) {
+        const alpha = (1 - dist / connectionDist) * maxAlpha;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(74, 246, 38, ${alpha})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+
+  for (const p of particles) {
+    const glow = 0.3 + Math.sin(p.life * Math.PI * 2) * 0.2;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(74, 246, 38, ${glow})`;
+    ctx.fill();
+  }
+
+  requestAnimationFrame(stepParticles);
+}
+
+// ── Career Constellation ────────────────────────────────
+
+const constellationCanvas = document.getElementById('constellation-canvas');
+const cCtx = constellationCanvas.getContext('2d');
+let cWidth, cHeight;
+let hoveredNode = null;
+let isMobile = window.innerWidth <= 600;
+
+const careerNodes = [
+  { id: 'pixar',    label: 'Pixar',         domain: 'animation',   detail: 'Built the physics simulations that drove vehicle motion in Pixar films.',     col: 0 },
+  { id: 'conduit',  label: 'Conduit Labs',  domain: 'games',       detail: 'Early-stage startup — engineering, product, whatever it took.',      col: 1 },
+  { id: 'zynga',    label: 'Zynga',         domain: 'games',       detail: 'Social gaming at massive scale.',                                    col: 2 },
+  { id: 'runkeeper',label: 'Runkeeper',     domain: 'consumer',    detail: 'Growth and product for one of the first fitness apps.',               col: 3 },
+  { id: 'instacart',label: 'Instacart',     domain: 'marketplace', detail: 'Growth PM — finding compounding levers in a complex marketplace.',   col: 4 },
+  { id: 'slack',    label: 'Slack',         domain: 'enterprise',  detail: 'Director of Product for the freemium, self-service business.',       col: 5 },
+  { id: 'reforge',  label: 'Reforge',       domain: 'education',   detail: 'Ran product programs for tens of thousands of leaders.',              col: 6 },
+  { id: 'a16z',     label: 'a16z speedrun', domain: 'investing',   detail: 'Visiting Partner. Finding great founders at the earliest stage.',    col: 7 },
+];
+
+const connections = [
+  // Sequential career path
+  ['pixar', 'conduit'],
+  ['conduit', 'zynga'],
+  ['zynga', 'runkeeper'],
+  ['runkeeper', 'instacart'],
+  ['instacart', 'slack'],
+  ['slack', 'reforge'],
+  ['reforge', 'a16z'],
+  // Thematic cross-connections
+  ['runkeeper', 'slack'],      // growth: core focus at both
+  ['instacart', 'reforge'],    // product: deep product thinking carried forward
+  ['pixar', 'zynga'],          // building: engineering & creative tools
+  ['zynga', 'instacart'],      // consumer scale: massive user bases
+  // speedrun draws on everything
+  ['pixar', 'a16z'],
+  ['conduit', 'a16z'],
+  ['zynga', 'a16z'],
+  ['runkeeper', 'a16z'],
+  ['instacart', 'a16z'],
+  ['slack', 'a16z'],
+];
+
+function layoutNodes() {
+  const rect = constellationCanvas.getBoundingClientRect();
+  cWidth = constellationCanvas.width = rect.width * window.devicePixelRatio;
+  cHeight = constellationCanvas.height = rect.height * window.devicePixelRatio;
+  cCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  const w = rect.width;
+  const h = rect.height;
+  isMobile = window.innerWidth <= 600;
+
+  if (isMobile) {
+    // Mobile: 2 columns, 4 rows
+    const padX = 60;
+    const padY = 30;
+    const colW = (w - padX * 2);
+    const rowH = (h - padY * 2) / 3.5;
+
+    const mobileLayout = [
+      { col: 0, row: 0 },   // pixar
+      { col: 1, row: 0 },   // conduit
+      { col: 0, row: 1 },   // zynga
+      { col: 1, row: 1 },   // runkeeper
+      { col: 0, row: 2 },   // instacart
+      { col: 1, row: 2 },   // slack
+      { col: 0, row: 3 },   // reforge
+      { col: 1, row: 3 },   // a16z
+    ];
+
+    for (let i = 0; i < careerNodes.length; i++) {
+      const node = careerNodes[i];
+      const ml = mobileLayout[i];
+      node.x = padX + ml.col * colW;
+      node.y = padY + ml.row * rowH;
+      node.drawRadius = 5;
+      node.hoverRadius = 8;
+    }
+  } else {
+    // Desktop: horizontal spread
+    const padX = 50;
+    const padY = 40;
+    const cols = 8;
+    const stepX = (w - padX * 2) / (cols - 1);
+    const yOffsets = [0.5, 0.2, 0.8, 0.45, 0.7, 0.15, 0.6, 0.4];
+
+    for (const node of careerNodes) {
+      node.x = padX + node.col * stepX;
+      node.y = padY + (h - padY * 2) * yOffsets[node.col];
+      node.drawRadius = 6;
+      node.hoverRadius = 10;
+    }
+  }
+}
+
+function getNodeById(id) {
+  return careerNodes.find(n => n.id === id);
+}
+
+function drawConstellation() {
+  const rect = constellationCanvas.getBoundingClientRect();
+  const w = rect.width;
+  const h = rect.height;
+
+  cCtx.clearRect(0, 0, w, h);
+
+  // Draw connections
+  for (const [fromId, toId] of connections) {
+    const from = getNodeById(fromId);
+    const to = getNodeById(toId);
+    const isHighlighted = hoveredNode && (hoveredNode.id === fromId || hoveredNode.id === toId);
+    const alpha = isHighlighted ? 0.5 : 0.15;
+    const lineW = isHighlighted ? 1.5 : 0.8;
+
+    cCtx.beginPath();
+    cCtx.moveTo(from.x, from.y);
+    cCtx.lineTo(to.x, to.y);
+    cCtx.strokeStyle = `rgba(74, 246, 38, ${alpha})`;
+    cCtx.lineWidth = lineW;
+    cCtx.stroke();
+  }
+
+  // Draw nodes
+  const fontSize = isMobile ? 10 : 11;
+  const fontSizeHover = isMobile ? 11 : 13;
+  const domainFontSize = isMobile ? 8 : 9;
+
+  for (const node of careerNodes) {
+    const isHovered = hoveredNode && hoveredNode.id === node.id;
+    const r = isHovered ? node.hoverRadius : node.drawRadius;
+    const alpha = isHovered ? 1 : 0.6;
+
+    // Glow
+    if (isHovered) {
+      cCtx.beginPath();
+      cCtx.arc(node.x, node.y, r + 8, 0, Math.PI * 2);
+      cCtx.fillStyle = 'rgba(74, 246, 38, 0.1)';
+      cCtx.fill();
+    }
+
+    // Node circle
+    cCtx.beginPath();
+    cCtx.arc(node.x, node.y, r, 0, Math.PI * 2);
+    cCtx.fillStyle = `rgba(74, 246, 38, ${alpha})`;
+    cCtx.fill();
+
+    // Label
+    cCtx.font = `${isHovered ? '500' : '400'} ${isHovered ? fontSizeHover : fontSize}px 'JetBrains Mono', monospace`;
+    cCtx.fillStyle = isHovered ? '#fff' : '#aaa';
+    cCtx.textAlign = 'center';
+    cCtx.fillText(node.label, node.x, node.y - r - 10);
+
+    // Domain label below
+    cCtx.font = `300 ${domainFontSize}px "JetBrains Mono", monospace`;
+    cCtx.fillStyle = isHovered ? 'rgba(74, 246, 38, 0.8)' : 'rgba(74, 246, 38, 0.4)';
+    cCtx.fillText(node.domain, node.x, node.y + r + 16);
+  }
+}
+
+function handleConstellationMove(clientX, clientY) {
+  const rect = constellationCanvas.getBoundingClientRect();
+  const mx = clientX - rect.left;
+  const my = clientY - rect.top;
+
+  let found = null;
+  const hitRadius = isMobile ? 35 : 25;
+
+  for (const node of careerNodes) {
+    const dx = mx - node.x;
+    const dy = my - node.y;
+    if (Math.sqrt(dx * dx + dy * dy) < hitRadius) {
+      found = node;
+      break;
+    }
+  }
+
+  if (found !== hoveredNode) {
+    hoveredNode = found;
+    const detailEl = document.getElementById('constellation-detail');
+    if (hoveredNode) {
+      detailEl.textContent = hoveredNode.detail;
+      detailEl.style.opacity = '1';
+      constellationCanvas.style.cursor = 'pointer';
+    } else {
+      detailEl.innerHTML = '&nbsp;';
+      detailEl.style.opacity = '0.5';
+      constellationCanvas.style.cursor = 'default';
+    }
+    drawConstellation();
+  }
+}
+
+constellationCanvas.addEventListener('mousemove', (e) => {
+  handleConstellationMove(e.clientX, e.clientY);
+});
+
+constellationCanvas.addEventListener('mouseleave', () => {
+  hoveredNode = null;
+  document.getElementById('constellation-detail').innerHTML = '&nbsp;';
+  document.getElementById('constellation-detail').style.opacity = '0.5';
+  constellationCanvas.style.cursor = 'default';
+  drawConstellation();
+});
+
+// Touch support — tap to select, tap elsewhere to deselect
+constellationCanvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = constellationCanvas.getBoundingClientRect();
+  const mx = touch.clientX - rect.left;
+  const my = touch.clientY - rect.top;
+
+  let found = null;
+  const hitRadius = 35;
+
+  for (const node of careerNodes) {
+    const dx = mx - node.x;
+    const dy = my - node.y;
+    if (Math.sqrt(dx * dx + dy * dy) < hitRadius) {
+      found = node;
+      break;
+    }
+  }
+
+  // Toggle: tap same node to deselect, tap new node to select, tap empty to deselect
+  if (found && found === hoveredNode) {
+    hoveredNode = null;
+  } else {
+    hoveredNode = found;
+  }
+
+  const detailEl = document.getElementById('constellation-detail');
+  if (hoveredNode) {
+    detailEl.textContent = hoveredNode.detail;
+    detailEl.style.opacity = '1';
+  } else {
+    detailEl.innerHTML = '&nbsp;';
+    detailEl.style.opacity = '0.5';
+  }
+  drawConstellation();
+}, { passive: false });
+
+// ── Theme node interactivity ────────────────────────────
+
+document.querySelectorAll('.theme-node').forEach((node) => {
+  const detail = node.getAttribute('data-detail');
+  const detailEl = node.querySelector('.theme-detail');
+  if (detail && detailEl) {
+    detailEl.textContent = detail;
+  }
+
+  // Mobile: tap to toggle
+  node.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    // Close other open nodes
+    document.querySelectorAll('.theme-node.active').forEach((other) => {
+      if (other !== node) other.classList.remove('active');
+    });
+    node.classList.toggle('active');
+  }, { passive: false });
+});
+
+// ── Events ──────────────────────────────────────────────
+
+window.addEventListener('resize', () => {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  layoutNodes();
+  drawConstellation();
+});
+
+document.addEventListener('mousemove', (e) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  mouse.active = true;
+});
+
+document.addEventListener('mouseleave', () => {
+  mouse.active = false;
+});
+
+window.addEventListener('scroll', () => {
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  scrollProgress = docHeight > 0 ? Math.min(window.scrollY / docHeight, 1) : 0;
+}, { passive: true });
+
+// Scroll reveal
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  },
+  { threshold: 0.1 }
+);
+
+document.querySelectorAll('.section').forEach((el) => {
+  observer.observe(el);
+});
+
+// ── Boot ────────────────────────────────────────────────
+initParticles();
+stepParticles();
+layoutNodes();
+drawConstellation();
+</script>
+
+</body>
+</html>
