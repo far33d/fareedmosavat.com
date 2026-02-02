@@ -309,8 +309,8 @@
   @media (max-width: 600px) {
     body { font-size: 14px; }
     .hero-links { gap: 1rem; }
-    #constellation-canvas { height: 70vh; min-height: 400px; }
-    #theme-canvas { height: 50vh; min-height: 300px; }
+    #constellation-canvas { height: 70vh; min-height: 480px; }
+    #theme-canvas { height: 60vh; min-height: 400px; }
   }
 </style>
 </head>
@@ -559,28 +559,29 @@ function layoutNodes() {
   isMobile = window.innerWidth <= 600;
 
   if (isMobile) {
-    // Mobile: 2 columns, 4 rows
-    const padX = 60;
+    // Mobile: hand-tuned zigzag web flowing vertically
+    const padX = 40;
     const padY = 30;
-    const colW = (w - padX * 2);
-    const rowH = (h - padY * 2) / 3.5;
+    const usableW = w - padX * 2;
+    const usableH = h - padY * 2;
 
-    const mobileLayout = [
-      { col: 0, row: 0 },   // pixar
-      { col: 1, row: 0 },   // conduit
-      { col: 0, row: 1 },   // zynga
-      { col: 1, row: 1 },   // runkeeper
-      { col: 0, row: 2 },   // instacart
-      { col: 1, row: 2 },   // slack
-      { col: 0, row: 3 },   // reforge
-      { col: 1, row: 3 },   // a16z
+    // (xFrac, yFrac) — organic spread, wider
+    const mobilePositions = [
+      { xf: 0.20, yf: 0.04 },  // Pixar — left
+      { xf: 0.78, yf: 0.14 },  // Conduit — right
+      { xf: 0.42, yf: 0.27 },  // Zynga — center
+      { xf: 0.82, yf: 0.40 },  // Runkeeper — right
+      { xf: 0.15, yf: 0.50 },  // Instacart — left
+      { xf: 0.62, yf: 0.63 },  // Slack — center-right
+      { xf: 0.20, yf: 0.78 },  // Reforge — left
+      { xf: 0.50, yf: 0.93 },  // a16z — center
     ];
 
     for (let i = 0; i < careerNodes.length; i++) {
       const node = careerNodes[i];
-      const ml = mobileLayout[i];
-      node.x = padX + ml.col * colW;
-      node.y = padY + ml.row * rowH;
+      const pos = mobilePositions[i];
+      node.x = padX + usableW * pos.xf;
+      node.y = padY + usableH * pos.yf;
       node.drawRadius = 5;
       node.hoverRadius = 8;
     }
@@ -791,27 +792,28 @@ function layoutThemeNodes() {
   const h = rect.height;
 
   if (isMobile) {
-    // Mobile: 2 columns, 4 rows
-    const padX = 60;
+    // Mobile: hand-tuned zigzag web flowing vertically
+    const padX = 40;
     const padY = 30;
-    const colW = (w - padX * 2);
-    const rowH = (h - padY * 2) / 3;
+    const usableW = w - padX * 2;
+    const usableH = h - padY * 2;
 
-    const mLayout = [
-      { col: 0, row: 0 },
-      { col: 1, row: 0 },
-      { col: 0, row: 1 },
-      { col: 1, row: 1 },
-      { col: 0, row: 2 },
-      { col: 1, row: 2 },
-      { col: 0.5, row: 3 },
+    // (xFrac, yFrac) — staggered across 3 x-positions for organic web, wider
+    const mobilePositions = [
+      { xf: 0.18, yf: 0.05 },  // Vertical AI agents — left, top
+      { xf: 0.80, yf: 0.15 },  // Developer tools — right
+      { xf: 0.42, yf: 0.30 },  // AI infrastructure — center
+      { xf: 0.85, yf: 0.48 },  // PLG & prosumer — right
+      { xf: 0.15, yf: 0.55 },  // Multiplayer AI — left
+      { xf: 0.65, yf: 0.72 },  // Robotics & physical AI — center-right
+      { xf: 0.22, yf: 0.90 },  // AI creativity — left, bottom
     ];
 
     for (let i = 0; i < themeNodes.length; i++) {
       const node = themeNodes[i];
-      const ml = mLayout[i];
-      node.x = padX + ml.col * colW;
-      node.y = padY + ml.row * rowH;
+      const pos = mobilePositions[i];
+      node.x = padX + usableW * pos.xf;
+      node.y = padY + usableH * pos.yf;
       node.drawRadius = 5;
       node.hoverRadius = 8;
     }
