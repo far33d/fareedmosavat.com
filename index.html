@@ -198,55 +198,25 @@
     font-weight: 500;
   }
 
-  .theme-cluster {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+  #theme-canvas {
+    width: 100%;
+    height: 42vh;
+    min-height: 320px;
+    display: block;
+    cursor: default;
+    position: relative;
+    z-index: 2;
     margin: 2rem 0;
   }
 
-  .theme-node {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--green-dim);
-    border-radius: 20px;
-    color: var(--green);
-    font-size: 0.8rem;
-    font-weight: 400;
-    background: rgba(74, 246, 38, 0.04);
-    transition: all 0.4s ease;
-    cursor: default;
-    position: relative;
-    overflow: hidden;
-    max-height: 2.5rem;
-  }
-
-  .theme-node .theme-label {
-    display: block;
-    transition: all 0.3s ease;
-  }
-
-  .theme-node .theme-detail {
-    display: block;
-    color: #999;
-    font-size: 0.75rem;
+  .theme-detail {
+    text-align: center;
+    min-height: 2.5rem;
+    margin-top: 1rem;
+    color: #888;
+    font-size: 0.85rem;
     font-weight: 300;
-    margin-top: 0.4rem;
-    opacity: 0;
     transition: opacity 0.3s ease;
-  }
-
-  .theme-node:hover,
-  .theme-node.active {
-    border-color: var(--green);
-    background: rgba(74, 246, 38, 0.08);
-    box-shadow: 0 0 20px rgba(74, 246, 38, 0.12);
-    max-height: 6rem;
-    padding: 0.6rem 1rem;
-  }
-
-  .theme-node:hover .theme-detail,
-  .theme-node.active .theme-detail {
-    opacity: 1;
   }
 
   .invest-cta {
@@ -340,12 +310,7 @@
     body { font-size: 14px; }
     .hero-links { gap: 1rem; }
     #constellation-canvas { height: 70vh; min-height: 400px; }
-    .theme-cluster { gap: 0.5rem; }
-    .theme-node { font-size: 0.75rem; padding: 0.4rem 0.8rem; max-height: 2.2rem; }
-    .theme-node:hover, .theme-node.active {
-      padding: 0.5rem 0.8rem;
-    }
-    .theme-node .theme-detail { font-size: 0.7rem; }
+    #theme-canvas { height: 50vh; min-height: 300px; }
   }
 </style>
 </head>
@@ -368,8 +333,9 @@
 
   <!-- ── The Arc ────────────────────────────────── -->
   <div class="section" id="arc">
+    <h2 class="section-heading">Connecting the dots</h2>
     <p class="arc-text">
-      I started my career at <strong>Pixar</strong> building physics simulations, then spent a decade as an operator at startups from pre-launch to public &mdash; <strong>Zynga</strong>, <strong>Runkeeper</strong>, <strong>Instacart</strong>, <strong>Slack</strong>. I ran product education at <strong>Reforge</strong> for tens of thousands of PMs. Now I invest at the earliest stage through <strong>a16z speedrun</strong>.
+      Every role shaped how I think about building. I started at <strong>Pixar</strong> building physics simulations, then spent a decade as an operator at startups from pre-launch to public &mdash; <strong>Zynga</strong>, <strong>Runkeeper</strong>, <strong>Instacart</strong>, <strong>Slack</strong>. I ran product education at <strong>Reforge</strong> for tens of thousands of PMs. Now I invest at the earliest stage through <strong>a16z speedrun</strong>, connecting the dots across all of it.
     </p>
     <canvas id="constellation-canvas"></canvas>
     <div class="constellation-detail" id="constellation-detail">&nbsp;</div>
@@ -391,36 +357,8 @@
       Small teams, capital efficient, building where AI fundamentally changes
       the cost structure.
     </p>
-    <div class="theme-cluster" id="theme-cluster">
-      <div class="theme-node" data-detail="Replacing entire workflows, not just assisting — AI that owns the outcome.">
-        <span class="theme-label">Vertical AI agents</span>
-        <span class="theme-detail"></span>
-      </div>
-      <div class="theme-node" data-detail="Tools that make developers 10x more productive, not 10% more comfortable.">
-        <span class="theme-label">Developer tools</span>
-        <span class="theme-detail"></span>
-      </div>
-      <div class="theme-node" data-detail="The picks and shovels layer — what every AI company needs to build on.">
-        <span class="theme-label">AI infrastructure</span>
-        <span class="theme-detail"></span>
-      </div>
-      <div class="theme-node" data-detail="Products that grow through usage. Prosumer tools that cross into enterprise.">
-        <span class="theme-label">PLG &amp; prosumer</span>
-        <span class="theme-detail"></span>
-      </div>
-      <div class="theme-node" data-detail="AI that makes teams better together, not just individuals faster.">
-        <span class="theme-label">Multi-player AI</span>
-        <span class="theme-detail"></span>
-      </div>
-      <div class="theme-node" data-detail="AI that touches the physical world — robots, embodied agents, hardware-software.">
-        <span class="theme-label">Robotics &amp; physical AI</span>
-        <span class="theme-detail"></span>
-      </div>
-      <div class="theme-node" data-detail="New tools for making things — where AI is a creative partner, not a replacement.">
-        <span class="theme-label">AI for creative tools</span>
-        <span class="theme-detail"></span>
-      </div>
-    </div>
+    <canvas id="theme-canvas"></canvas>
+    <div class="theme-detail" id="theme-detail">&nbsp;</div>
     <div class="invest-cta">
       <a href="https://speedrun.a16z.com/apply" target="_blank">If you're building something like this, apply to speedrun &rarr;</a>
     </div>
@@ -690,9 +628,9 @@ function drawConstellation() {
   }
 
   // Draw nodes
-  const fontSize = isMobile ? 10 : 11;
-  const fontSizeHover = isMobile ? 11 : 13;
-  const domainFontSize = isMobile ? 8 : 9;
+  const fontSize = isMobile ? 12 : 13;
+  const fontSizeHover = isMobile ? 13 : 15;
+  const domainFontSize = isMobile ? 9 : 10;
 
   for (const node of careerNodes) {
     const isHovered = hoveredNode && hoveredNode.id === node.id;
@@ -809,33 +747,251 @@ constellationCanvas.addEventListener('touchstart', (e) => {
   drawConstellation();
 }, { passive: false });
 
-// ── Theme node interactivity ────────────────────────────
+// ── Theme Constellation ──────────────────────────────────
 
-document.querySelectorAll('.theme-node').forEach((node) => {
-  const detail = node.getAttribute('data-detail');
-  const detailEl = node.querySelector('.theme-detail');
-  if (detail && detailEl) {
-    detailEl.textContent = detail;
+const themeCanvas = document.getElementById('theme-canvas');
+const tCtx = themeCanvas.getContext('2d');
+let tWidth, tHeight;
+let hoveredTheme = null;
+
+const themeNodes = [
+  { id: 'vertical-ai',   label: 'Vertical AI agents',       detail: 'Replacing entire workflows, not just assisting \u2014 AI that owns the outcome.' },
+  { id: 'dev-tools',     label: 'Developer tools',           detail: 'Tools that make developers 10x more productive, not 10% more comfortable.' },
+  { id: 'ai-infra',      label: 'AI infrastructure',         detail: 'The picks and shovels layer \u2014 what every AI company needs to build on.' },
+  { id: 'plg',           label: 'PLG & prosumer',            detail: 'Products that grow through usage. Prosumer tools that cross into enterprise.' },
+  { id: 'multiplayer',   label: 'Multi-player AI',           detail: 'AI that makes teams better together, not just individuals faster.' },
+  { id: 'robotics',      label: 'Robotics & physical AI',    detail: 'AI that touches the physical world \u2014 robots, embodied agents, hardware-software.' },
+  { id: 'creative',      label: 'AI creativity',     detail: 'New tools for making things \u2014 where AI is a creative partner, not a replacement.' },
+];
+
+const themeConnections = [
+  ['vertical-ai', 'ai-infra'],
+  ['dev-tools',   'ai-infra'],
+  ['plg',         'multiplayer'],
+  ['robotics',    'ai-infra'],
+  ['creative',    'vertical-ai'],
+  ['dev-tools',   'vertical-ai'],
+  ['plg',         'dev-tools'],
+  ['plg',         'creative'],
+  ['plg',         'vertical-ai'],
+  ['robotics',    'multiplayer'],
+  ['robotics',    'dev-tools'],
+  ['creative',    'dev-tools'],
+  ['multiplayer', 'ai-infra'],
+];
+
+function layoutThemeNodes() {
+  const rect = themeCanvas.getBoundingClientRect();
+  tWidth = themeCanvas.width = rect.width * window.devicePixelRatio;
+  tHeight = themeCanvas.height = rect.height * window.devicePixelRatio;
+  tCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  const w = rect.width;
+  const h = rect.height;
+
+  if (isMobile) {
+    // Mobile: 2 columns, 4 rows
+    const padX = 60;
+    const padY = 30;
+    const colW = (w - padX * 2);
+    const rowH = (h - padY * 2) / 3;
+
+    const mLayout = [
+      { col: 0, row: 0 },
+      { col: 1, row: 0 },
+      { col: 0, row: 1 },
+      { col: 1, row: 1 },
+      { col: 0, row: 2 },
+      { col: 1, row: 2 },
+      { col: 0.5, row: 3 },
+    ];
+
+    for (let i = 0; i < themeNodes.length; i++) {
+      const node = themeNodes[i];
+      const ml = mLayout[i];
+      node.x = padX + ml.col * colW;
+      node.y = padY + ml.row * rowH;
+      node.drawRadius = 5;
+      node.hoverRadius = 8;
+    }
+  } else {
+    // Desktop: organic cluster spread
+    const padX = 50;
+    const padY = 35;
+    const usableW = w - padX * 2;
+    const usableH = h - padY * 2;
+
+    // Hand-tuned positions for an organic cloud layout (xFrac, yFrac of usable area)
+    const positions = [
+      { xf: 0.08, yf: 0.25 },  // Vertical AI agents
+      { xf: 0.32, yf: 0.65 },  // Developer tools
+      { xf: 0.42, yf: 0.15 },  // AI infrastructure
+      { xf: 0.72, yf: 0.55 },  // PLG & prosumer
+      { xf: 0.75, yf: 0.20 },  // Multi-player AI
+      { xf: 0.58, yf: 0.78 },  // Robotics & physical AI
+      { xf: 0.18, yf: 0.78 },  // AI creativity
+    ];
+
+    for (let i = 0; i < themeNodes.length; i++) {
+      const node = themeNodes[i];
+      const pos = positions[i];
+      node.x = padX + usableW * pos.xf;
+      node.y = padY + usableH * pos.yf;
+      node.drawRadius = 6;
+      node.hoverRadius = 10;
+    }
+  }
+}
+
+function getThemeNodeById(id) {
+  return themeNodes.find(n => n.id === id);
+}
+
+function drawThemeConstellation() {
+  const rect = themeCanvas.getBoundingClientRect();
+  const w = rect.width;
+  const h = rect.height;
+
+  tCtx.clearRect(0, 0, w, h);
+
+  // Draw connections (lighter than career)
+  for (const [fromId, toId] of themeConnections) {
+    const from = getThemeNodeById(fromId);
+    const to = getThemeNodeById(toId);
+    const isHighlighted = hoveredTheme && (hoveredTheme.id === fromId || hoveredTheme.id === toId);
+    const alpha = isHighlighted ? 0.4 : 0.10;
+    const lineW = isHighlighted ? 1.2 : 0.6;
+
+    tCtx.beginPath();
+    tCtx.moveTo(from.x, from.y);
+    tCtx.lineTo(to.x, to.y);
+    tCtx.strokeStyle = `rgba(74, 246, 38, ${alpha})`;
+    tCtx.lineWidth = lineW;
+    tCtx.stroke();
   }
 
-  // Mobile: tap to toggle
-  node.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    // Close other open nodes
-    document.querySelectorAll('.theme-node.active').forEach((other) => {
-      if (other !== node) other.classList.remove('active');
-    });
-    node.classList.toggle('active');
-  }, { passive: false });
+  // Draw nodes
+  const fontSize = isMobile ? 12 : 13;
+  const fontSizeHover = isMobile ? 13 : 15;
+
+  for (const node of themeNodes) {
+    const isHovered = hoveredTheme && hoveredTheme.id === node.id;
+    const r = isHovered ? node.hoverRadius : node.drawRadius;
+    const alpha = isHovered ? 1 : 0.6;
+
+    // Glow
+    if (isHovered) {
+      tCtx.beginPath();
+      tCtx.arc(node.x, node.y, r + 8, 0, Math.PI * 2);
+      tCtx.fillStyle = 'rgba(74, 246, 38, 0.1)';
+      tCtx.fill();
+    }
+
+    // Node circle
+    tCtx.beginPath();
+    tCtx.arc(node.x, node.y, r, 0, Math.PI * 2);
+    tCtx.fillStyle = `rgba(74, 246, 38, ${alpha})`;
+    tCtx.fill();
+
+    // Label
+    tCtx.font = `${isHovered ? '500' : '400'} ${isHovered ? fontSizeHover : fontSize}px 'JetBrains Mono', monospace`;
+    tCtx.fillStyle = isHovered ? '#fff' : '#aaa';
+    tCtx.textAlign = 'center';
+    tCtx.fillText(node.label, node.x, node.y - r - 10);
+  }
+}
+
+function handleThemeMove(clientX, clientY) {
+  const rect = themeCanvas.getBoundingClientRect();
+  const mx = clientX - rect.left;
+  const my = clientY - rect.top;
+
+  let found = null;
+  const hitRadius = isMobile ? 35 : 25;
+
+  for (const node of themeNodes) {
+    const dx = mx - node.x;
+    const dy = my - node.y;
+    if (Math.sqrt(dx * dx + dy * dy) < hitRadius) {
+      found = node;
+      break;
+    }
+  }
+
+  if (found !== hoveredTheme) {
+    hoveredTheme = found;
+    const detailEl = document.getElementById('theme-detail');
+    if (hoveredTheme) {
+      detailEl.textContent = hoveredTheme.detail;
+      detailEl.style.opacity = '1';
+      themeCanvas.style.cursor = 'pointer';
+    } else {
+      detailEl.innerHTML = '&nbsp;';
+      detailEl.style.opacity = '0.5';
+      themeCanvas.style.cursor = 'default';
+    }
+    drawThemeConstellation();
+  }
+}
+
+themeCanvas.addEventListener('mousemove', (e) => {
+  handleThemeMove(e.clientX, e.clientY);
 });
+
+themeCanvas.addEventListener('mouseleave', () => {
+  hoveredTheme = null;
+  document.getElementById('theme-detail').innerHTML = '&nbsp;';
+  document.getElementById('theme-detail').style.opacity = '0.5';
+  themeCanvas.style.cursor = 'default';
+  drawThemeConstellation();
+});
+
+themeCanvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = themeCanvas.getBoundingClientRect();
+  const mx = touch.clientX - rect.left;
+  const my = touch.clientY - rect.top;
+
+  let found = null;
+  const hitRadius = 35;
+
+  for (const node of themeNodes) {
+    const dx = mx - node.x;
+    const dy = my - node.y;
+    if (Math.sqrt(dx * dx + dy * dy) < hitRadius) {
+      found = node;
+      break;
+    }
+  }
+
+  if (found && found === hoveredTheme) {
+    hoveredTheme = null;
+  } else {
+    hoveredTheme = found;
+  }
+
+  const detailEl = document.getElementById('theme-detail');
+  if (hoveredTheme) {
+    detailEl.textContent = hoveredTheme.detail;
+    detailEl.style.opacity = '1';
+  } else {
+    detailEl.innerHTML = '&nbsp;';
+    detailEl.style.opacity = '0.5';
+  }
+  drawThemeConstellation();
+}, { passive: false });
 
 // ── Events ──────────────────────────────────────────────
 
 window.addEventListener('resize', () => {
   width = canvas.width = window.innerWidth;
   height = canvas.height = window.innerHeight;
+  isMobile = window.innerWidth <= 600;
   layoutNodes();
   drawConstellation();
+  layoutThemeNodes();
+  drawThemeConstellation();
 });
 
 document.addEventListener('mousemove', (e) => {
@@ -874,6 +1030,8 @@ initParticles();
 stepParticles();
 layoutNodes();
 drawConstellation();
+layoutThemeNodes();
+drawThemeConstellation();
 </script>
 
 </body>
