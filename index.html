@@ -718,7 +718,6 @@ constellationCanvas.addEventListener('mouseleave', () => {
 
 // Touch support — tap to select, tap elsewhere to deselect
 constellationCanvas.addEventListener('touchstart', (e) => {
-  e.preventDefault();
   const touch = e.touches[0];
   const rect = constellationCanvas.getBoundingClientRect();
   const mx = touch.clientX - rect.left;
@@ -736,8 +735,12 @@ constellationCanvas.addEventListener('touchstart', (e) => {
     }
   }
 
-  // Toggle: tap same node to deselect, tap new node to select, tap empty to deselect
-  if (found && found === hoveredNode) {
+  if (!found) return; // Let the browser handle scrolling
+
+  e.preventDefault();
+
+  // Toggle: tap same node to deselect, tap new node to select
+  if (found === hoveredNode) {
     hoveredNode = null;
   } else {
     hoveredNode = found;
@@ -955,7 +958,6 @@ themeCanvas.addEventListener('mouseleave', () => {
 });
 
 themeCanvas.addEventListener('touchstart', (e) => {
-  e.preventDefault();
   const touch = e.touches[0];
   const rect = themeCanvas.getBoundingClientRect();
   const mx = touch.clientX - rect.left;
@@ -973,7 +975,11 @@ themeCanvas.addEventListener('touchstart', (e) => {
     }
   }
 
-  if (found && found === hoveredTheme) {
+  if (!found) return; // Let the browser handle scrolling
+
+  e.preventDefault();
+
+  if (found === hoveredTheme) {
     hoveredTheme = null;
   } else {
     hoveredTheme = found;
